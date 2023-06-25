@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "User")
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 class UserController {
 
     final UserService userService;
