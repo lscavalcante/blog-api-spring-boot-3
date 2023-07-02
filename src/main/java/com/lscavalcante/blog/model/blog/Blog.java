@@ -34,6 +34,6 @@ public class Blog {
     @ManyToOne // many blogs can have only one user == (ForeignKey)
     private User user;
 
-    @OneToMany(mappedBy = "blog", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "blog", cascade = CascadeType.ALL) // this do not create a column in blog column
     private List<Comment> comments;
 }
