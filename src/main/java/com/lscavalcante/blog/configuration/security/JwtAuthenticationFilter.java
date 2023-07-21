@@ -41,23 +41,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // get path
         String requestPath = urlPathHelper.getPathWithinApplication(request);
         if (!isPathMatch(requestPath, "/auth/**") && !isPathMatch(requestPath, "/api/v1/auth/**")) {
-            // Verificar se a rota existe ou realizar qualquer outra lógica de validação aqui
             if (!isRouteValid(requestPath)) {
-                // response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                // return
-                // usando o código acima ele redirecionar para essa class authenticationEntryPoint
                 throw new NotFoundException("Route not found");
             }
         }
-
-        // get token
         String token = jwtService.resolveToken(request);
         if (token != null && jwtService.validJWT(token)) {
-            // get authentication user
             Authentication auth = jwtService.getAuthentication(token);
 
             if (auth != null) {
-                // set user
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         }

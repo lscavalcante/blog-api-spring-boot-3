@@ -64,9 +64,8 @@ public class SecurityConfiguration {
                                     "/webjars/**",
                                     "/swagger-ui.html"
                             ).permitAll()
-//                            .requestMatchers(HttpMethod.GET,"/user/**").hasAnyAuthority("admin:create")
-                            .requestMatchers(HttpMethod.GET, "/user/**").hasRole("ADMIN")
-                            .requestMatchers(HttpMethod.POST, "/user/**").authenticated()
+                            .requestMatchers("api/users/**").hasRole("ADMIN")
+                            .requestMatchers( "api/blogs/**").authenticated()
                             .requestMatchers("/auth/**").permitAll()
                             .anyRequest().permitAll()
                     ;

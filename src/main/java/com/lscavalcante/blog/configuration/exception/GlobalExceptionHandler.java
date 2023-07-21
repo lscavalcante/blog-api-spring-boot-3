@@ -45,8 +45,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<String> handleNotFoundException(NotFoundException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    public ResponseEntity<ResponseError> handleNotFoundException(NotFoundException ex) {
+        ResponseError response = new ResponseError(HttpStatus.BAD_REQUEST, ex.getMessage());
+        return new ResponseEntity<ResponseError>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(UnMappedException.class)
