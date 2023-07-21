@@ -1,7 +1,11 @@
 package com.lscavalcante.blog.controller;
 
+import com.lscavalcante.blog.dto.user.ResponseDetailUser;
 import com.lscavalcante.blog.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -19,8 +23,8 @@ class UserController {
     }
 
     @GetMapping()
-    public ResponseEntity<String> list() {
-        return ResponseEntity.status(HttpStatus.CREATED).body("list user");
+    public ResponseEntity<Page<ResponseDetailUser>> list(@PageableDefault(size = Integer.MAX_VALUE) Pageable pageable) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.list(pageable));
     }
     @PostMapping()
     public ResponseEntity<String> create() {

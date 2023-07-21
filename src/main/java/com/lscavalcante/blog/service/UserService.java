@@ -1,15 +1,19 @@
 package com.lscavalcante.blog.service;
 
 import com.lscavalcante.blog.configuration.exception.NotFoundException;
+import com.lscavalcante.blog.configuration.exception.RecordException;
 import com.lscavalcante.blog.configuration.exception.ResetPasswordTokenInvalidException;
 import com.lscavalcante.blog.configuration.exception.UnMappedException;
 import com.lscavalcante.blog.configuration.security.JwtService;
 import com.lscavalcante.blog.dto.auth.*;
 import com.lscavalcante.blog.dto.token.ResponseToken;
+import com.lscavalcante.blog.dto.user.ResponseDetailUser;
 import com.lscavalcante.blog.model.user.Role;
 import com.lscavalcante.blog.model.user.User;
 import com.lscavalcante.blog.repository.RoleRepository;
 import com.lscavalcante.blog.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -30,10 +34,13 @@ public class UserService {
     final JwtService jwtService;
     final AuthenticationManager authenticationManager;
 
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, AuthenticationManager authenticationManager, JwtService jwtService) {
+    final ModelMapperService modelMapperService;
+
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, AuthenticationManager authenticationManager, JwtService jwtService, ModelMapperService modelMapperService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.authenticationManager = authenticationManager;
+        this.modelMapperService = modelMapperService;
         this.jwtService = jwtService;
     }
 
@@ -42,7 +49,7 @@ public class UserService {
             var username = request.getEmail();
             var password = request.getPassword();
 
-            User user = userRepository.findByEmail(username).orElseThrow(() -> new NotFoundException("user not found"));
+            User user = userRepository.findByEmail(username).orElseThrow(() -> new RecordException("user not found"));
 
             authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(username, password, new ArrayList<>()));
@@ -58,7 +65,7 @@ public class UserService {
     public ResponseCreateAccount createAccount(RequestCreateAccount dto) {
         try {
             if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
-                throw new RuntimeException("User already exists");
+                throw new NotFoundException("User already exists");
             }
 
             Role role = roleRepository.findByName("ADMIN").orElseThrow(() -> new NotFoundException("Role ADMIN not found is not possible create the user contact the support"));
@@ -119,6 +126,10 @@ public class UserService {
         } catch (Exception ex) {
             throw new UnMappedException(ex.getMessage());
         }
+    }
+
+    public Page<ResponseDetailUser> list(Pageable pageable) {
+        return userRepository.findAll(pageable).map((e) -> modelMapperService.map(e, ResponseDetailUser.class));
     }
 
     private void generateResetToken(User user) {
