@@ -8,6 +8,7 @@ import java.util.Date;
 public class ResponseListBlog {
     private Long id;
     private String title;
+    private String imageUrl;
     private String content;
     private Date createdAt;
     private Date updatedAt;

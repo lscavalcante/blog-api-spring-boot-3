@@ -15,4 +15,11 @@ public class ResponseError {
     private HttpStatus status;
     private String message;
     private List<Map<String, Object>> errors;
+
+
+    public ResponseError(HttpStatus status, String message) {
+        this.status = status;
+        this.message = message;
+        this.errors = List.of();
+    }
 }
