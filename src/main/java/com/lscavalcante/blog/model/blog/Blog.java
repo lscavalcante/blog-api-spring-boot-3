@@ -23,6 +23,8 @@ public class Blog {
 
     private String content;
 
+    private String image;
+
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
