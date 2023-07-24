@@ -22,6 +22,7 @@ Project Name is a web application built with Java 17 and Spring Boot 3, incorpor
 - Pagination
 - Filters
 - Upload Files
+- Create Pdf Files
 - Docker
 - Docker Compose
 - Nginx
