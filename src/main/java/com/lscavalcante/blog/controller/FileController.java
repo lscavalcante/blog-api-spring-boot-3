@@ -30,7 +30,7 @@ public class FileController {
         String contentyType = "";
         contentyType = httpServletRequest.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
 
-        if (contentyType.isBlank()) contentyType = "application/octet-stream";
+        if (contentyType.isBlank()) contentyType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
 
         return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentyType)).body(resource);
     }
