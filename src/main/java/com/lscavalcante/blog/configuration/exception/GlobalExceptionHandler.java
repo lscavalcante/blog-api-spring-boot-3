@@ -56,8 +56,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(InvalidJwtAuthenticationException.class)
-    public ResponseEntity<String> handleInvalidJwtAuthenticationException(InvalidJwtAuthenticationException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
+    public ResponseEntity<ResponseError> handleInvalidJwtAuthenticationException(InvalidJwtAuthenticationException ex) {
+        ResponseError response = new ResponseError(HttpStatus.BAD_REQUEST, ex.getMessage());
+        return new ResponseEntity<ResponseError>(response, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
