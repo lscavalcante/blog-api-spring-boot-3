@@ -83,7 +83,13 @@
             <artifactId>java-jwt</artifactId>
             <version>${auth0.version}</version>
         </dependency>
-        
+
+        <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>3.0.0-alpha3</version>
+        </dependency>
 
 
     </dependencies>
