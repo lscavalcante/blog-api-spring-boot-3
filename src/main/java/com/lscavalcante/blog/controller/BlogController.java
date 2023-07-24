@@ -8,11 +8,9 @@ import com.lscavalcante.blog.dto.comment.RequestCreateComment;
 import com.lscavalcante.blog.dto.comment.RequestUpdateComment;
 import com.lscavalcante.blog.dto.comment.ResponseCommentDetail;
 import com.lscavalcante.blog.model.blog.Blog;
-import com.lscavalcante.blog.service.BlogService;
-import com.lscavalcante.blog.service.CommentService;
-import com.lscavalcante.blog.service.PdfService;
-import com.lscavalcante.blog.service.UploadService;
+import com.lscavalcante.blog.service.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,12 +35,14 @@ public class BlogController {
 
     final UploadService uploadService;
     final PdfService pdfService;
+    final ExcelService excelService;
 
-    public BlogController(BlogService blogService, CommentService commentService, UploadService uploadService, PdfService pdfService) {
+    public BlogController(BlogService blogService, CommentService commentService, UploadService uploadService, PdfService pdfService, ExcelService excelService) {
         this.blogService = blogService;
         this.commentService = commentService;
         this.uploadService = uploadService;
         this.pdfService = pdfService;
+        this.excelService = excelService;
     }
 
     @GetMapping
@@ -58,6 +58,20 @@ public class BlogController {
         return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 
+
+    @GetMapping("excel")
+    public ResponseEntity<Resource> showBlogsExcel(HttpServletRequest httpServletRequest) throws IOException {
+
+        Resource resource = excelService.createExcel();
+
+        String contentyType = "";
+        contentyType = httpServletRequest.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+
+        if (contentyType.isBlank()) contentyType = "application/octet-stream";
+
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentyType)).body(resource);
+    }
+
     @GetMapping("{blogId}")
     public ResponseEntity<ResponseDetailBlog> show(@Validated @PathVariable Long blogId) {
         var body = blogService.show(blogId);
@@ -67,14 +81,14 @@ public class BlogController {
     @GetMapping("{blogId}/pdf")
     public ResponseEntity<Resource> showBlogPdf(@Validated @PathVariable Long blogId) throws IOException {
 
-        var pdf = pdfService.createPdf();
+        Resource resource = pdfService.createPdf();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
 
         return ResponseEntity.ok()
                 .headers(headers)
-                .body(pdf);
+                .body(resource);
     }
 
     @GetMapping("users/{userId}")
